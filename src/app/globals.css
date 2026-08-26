@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Theme tokens. Dark is the default (see the pre-paint script in layout.tsx);
+ * `.dark` on <html> selects the dark set, its absence gives light.
+ * Values are space-separated RGB channels so Tailwind's `/<alpha-value>` works.
+ */
+@layer base {
+  :root {
+    --bg: 255 255 255;
+    --surface: 246 248 251;
+    --card: 255 255 255;
+    --fg: 12 18 32;
+    --muted: 88 102 126;
+    --line: 224 230 240;
+    --accent: 29 78 216; /* deep blue */
+    --accent-soft: 219 234 254;
+    --accent-fg: 255 255 255;
+  }
+
+  .dark {
+    --bg: 8 11 20;
+    --surface: 13 18 31;
+    --card: 16 22 38;
+    --fg: 234 240 250;
+    --muted: 145 160 186;
+    --line: 31 41 63;
+    --accent: 96 165 250; /* lifted for contrast on dark */
+    --accent-soft: 30 58 138;
+    --accent-fg: 8 11 20;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Keeps anchor targets clear of the sticky header. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg text-fg antialiased;
+  }
+
+  /* Visible, consistent focus ring for keyboard users. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+  }
+
+  ::selection {
+    @apply bg-accent/25;
+  }
+
+  /* Respect users who ask for less motion. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  /*
+   * Button variants each spell out the shared base rules rather than @apply-ing
+   * a .btn class, so the stylesheet does not depend on @apply resolving custom
+   * component classes.
+   */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium
+           transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-accent-fg hover:bg-accent/90;
+  }
+
+  .btn-secondary {
+    @apply border border-line bg-card text-fg hover:border-accent/60 hover:text-accent;
+  }
+
+  .btn-ghost {
+    @apply text-muted hover:bg-surface hover:text-fg;
+  }
+
+  .btn-danger {
+    @apply border border-red-500/40 text-red-500 hover:bg-red-500/10;
+  }
+
+  .card {
+    @apply rounded-xl border border-line bg-card;
+  }
+
+  .tag {
+    @apply inline-flex items-center rounded-md border border-line bg-surface px-2 py-0.5
+           text-xs font-medium text-muted;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-line bg-bg px-3.5 py-2.5 text-sm text-fg
+           placeholder:text-muted/60 focus:border-accent focus:outline-none
+           focus:ring-2 focus:ring-accent/30;
+  }
+
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-fg;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.16em] text-accent;
+  }
+
+  .link-underline {
+    @apply text-accent underline decoration-accent/30 underline-offset-4 hover:decoration-accent;
+  }
+}
+
+/*
+ * Blog post body. Markdown is rendered to HTML server-side, so the elements are
+ * styled here rather than with per-element utility classes.
+ */
+@layer components {
+  .prose-post {
+    @apply text-[1.0625rem] leading-relaxed text-fg/90;
+  }
+  .prose-post > * + * {
+    @apply mt-5;
+  }
+  .prose-post h2 {
+    @apply mt-10 font-display text-2xl font-semibold text-fg;
+  }
+  .prose-post h3 {
+    @apply mt-8 font-display text-xl font-semibold text-fg;
+  }
+  .prose-post a {
+    @apply text-accent underline decoration-accent/30 underline-offset-4 hover:decoration-accent;
+  }
+  .prose-post strong {
+    @apply font-semibold text-fg;
+  }
+  .prose-post ul {
+    @apply list-disc space-y-2 pl-6;
+  }
+  .prose-post ol {
+    @apply list-decimal space-y-2 pl-6;
+  }
+  .prose-post blockquote {
+    @apply border-l-2 border-accent/50 pl-4 italic text-muted;
+  }
+  .prose-post code {
+    @apply rounded bg-surface px-1.5 py-0.5 font-mono text-[0.875em] text-accent;
+  }
+  .prose-post pre {
+    @apply overflow-x-auto rounded-lg border border-line bg-surface p-4 text-sm;
+  }
+  .prose-post pre code {
+    @apply bg-transparent p-0 text-fg/90;
+  }
+  .prose-post img {
+    @apply rounded-lg border border-line;
+  }
+  .prose-post hr {
+    @apply border-line;
+  }
+}
