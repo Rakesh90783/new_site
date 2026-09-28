@@ -85,7 +85,7 @@ export const site = {
    * disappears from the nav, footer, and contact page.
    */
   links: {
-    email: "rakesh.meher2@cognizant.com", // PLACEHOLDER — a personal address is usually better than a work one
+    email: "meherrakesh2019@gmail.com",
     github: "", // PLACEHOLDER — e.g. https://github.com/yourhandle
     linkedin: "", // PLACEHOLDER — e.g. https://www.linkedin.com/in/yourhandle
     twitter: "",
