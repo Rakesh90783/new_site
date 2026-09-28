@@ -156,6 +156,9 @@ migrations are tracked in a `_migrations` table, and every seed insert is
 `ON CONFLICT DO NOTHING`, so **reseeding never overwrites content you edited in
 the dashboard.**
 
+> **No Node available?** You do not need it for this step. See
+> [Setting up the database without Node](#setting-up-the-database-without-node).
+
 ### 6. Run
 
 ```bash
@@ -199,6 +202,38 @@ them locally and never add them to Vercel, as long as you run the seed from your
 machine against the production database.
 
 ---
+
+## Setting up the database without Node
+
+`npm run db:migrate` and `npm run db:seed` are conveniences, not requirements —
+they just run SQL. If Node is not installed, do the same thing from your
+database provider's web SQL editor instead. Vercel builds and runs the app in
+the cloud, so Node on your own machine is only ever needed for local
+development.
+
+1. Open the SQL editor — Neon: *project → SQL Editor*. Supabase: *SQL Editor →
+   New query*.
+2. Paste the whole of **`migrations/0001_init.sql`** and run it. That creates
+   `admins`, `projects`, `posts`, and `contact_messages`.
+3. Open **`scripts/seed.sql`**, change the password on the line marked
+   `>>> CHANGE THIS <<<`, then paste and run the whole file.
+
+That creates your admin account and the starter content. The seed uses
+pgcrypto's `crypt(..., gen_salt('bf', 12))`, which emits a `$2a$12$` bcrypt hash
+— the same format and cost `bcryptjs` produces, so logging in works identically.
+
+Both files are idempotent, and `scripts/seed.sql` records `0001_init.sql` in the
+`_migrations` table, so if you install Node later, `npm run db:migrate` correctly
+reports the database as already up to date rather than reapplying anything.
+
+To change the admin password later without Node:
+
+```sql
+UPDATE admins
+SET password_hash = crypt('your new password', gen_salt('bf', 12)),
+    updated_at = now()
+WHERE email = 'you@example.com';
+```
 
 ## Deploying to Vercel
 
